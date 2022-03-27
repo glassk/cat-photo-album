@@ -1,5 +1,6 @@
 import { request } from '../utils/api.js';
 import Breadcrumb from './Breadcrumb.js';
+import ImageView from './ImageView.js';
 import Nodes from './Nodes.js';
 
 export default function App($app) {
@@ -7,6 +8,7 @@ export default function App($app) {
     isRoot: false,
     nodes: [],
     depth: [],
+    selectedFilePath: null,
   };
 
   const breadcrumb = new Breadcrumb({ $app, initialState: this.state.depth });
@@ -23,13 +25,17 @@ export default function App($app) {
             nodes: nextNodes
           })
         } else if (node.type === 'FILE') {
-          // 이미지 보기 처리하기
+          this.setState({
+            ...this.state, 
+            selectedFilePath: node.filePath,
+          })
         }
       } catch(e) {
         // 에러 처리하기
       }
     },
   });
+  const imageView = new ImageView({$app, initialState: this.state.selectedFilePath})
 
   this.setState = (nextState) => {
     this.state = nextState;
@@ -38,6 +44,7 @@ export default function App($app) {
       isRoot: this.state.isRoot,
       nodes: this.state.nodes,
     });
+    imageView.setState(this.state.selectedFilePath);
   };
 
   const init = async = () => {
@@ -53,4 +60,3 @@ export default function App($app) {
 
   init();
 }
-
