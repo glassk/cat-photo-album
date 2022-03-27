@@ -1,3 +1,4 @@
+import { request } from '../utils/api.js';
 import Breadcrumb from './Breadcrumb.js';
 import Nodes from './Nodes.js';
 
@@ -18,4 +19,26 @@ export default function App($app) {
       }
     },
   });
+
+  this.setState = (nextState) => {
+    this.state = nextState;
+    breadcrumb.setState(this.state.depth);
+    nodes.setState({
+      isRoot: this.state.isRoot,
+      nodes: this.state.nodes,
+    });
+  };
+
+  const init = async = () => {
+    try {
+      const rootNodes = await request();
+      this.setState({
+        ...this.state, isRoot: true, nodes: rootNodes
+      })
+    } catch(e) {
+
+    }
+  }
+
+  init();
 }
