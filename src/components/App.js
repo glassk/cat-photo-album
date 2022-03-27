@@ -12,10 +12,21 @@ export default function App($app) {
   const breadcrumb = new Breadcrumb({ $app, initialState: this.state.depth });
   const nodes = new Nodes({
     $app,
-    initialState: { isRoot: this.state.isRoot, nodes: this.state.nodes },
-    onClick: (node) => {
-      if (node.type === 'DIRECTORY') {
-      } else if (node.type === 'FILE') {
+    initialState: [],
+    onClick: async (node) => {
+      try {
+        if (node.type === 'DIRECTORY') {
+          const nextNodes = await request(node.id);
+          this.setState({
+            ...this.state,
+            depth: [...this.state.depth, node],
+            nodes: nextNodes
+          })
+        } else if (node.type === 'FILE') {
+          // 이미지 보기 처리하기
+        }
+      } catch(e) {
+        // 에러 처리하기
       }
     },
   });
@@ -42,3 +53,4 @@ export default function App($app) {
 
   init();
 }
+
